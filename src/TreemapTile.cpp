@@ -128,7 +128,7 @@ void TreemapTile::init()
 void TreemapTile::createChildren( const QRectF & rect,
 				  Orientation	 orientation )
 {
-    if ( _orig->totalAllocatedSize() == 0 )	// Prevent division by zero
+    if ( _orig->totalSize() == 0 )	// Prevent division by zero (use logical size)
 	return;
 
     if ( _parentView->squarify() )
@@ -153,7 +153,7 @@ void TreemapTile::createChildrenSimple( const QRectF & rect,
     int offset	 = 0;
     int size	 = dir == TreemapHorizontal ? rect.width() : rect.height();
     int count	 = 0;
-    double scale = (double) size / (double) _orig->totalAllocatedSize();
+    double scale = (double) size / (double) _orig->totalSize();
 
     _cushionSurface.addRidge( childDir, rect );
     FileSize minSize = (FileSize) ( _parentView->minTileSize() / scale );
@@ -163,7 +163,7 @@ void TreemapTile::createChildrenSimple( const QRectF & rect,
     {
 	int childSize = 0;
 
-	childSize = (int) ( scale * (*it)->totalAllocatedSize() );
+	childSize = (int) ( scale * (*it)->totalSize() );
 
 	if ( childSize >= _parentView->minTileSize() )
 	{
@@ -190,13 +190,13 @@ void TreemapTile::createChildrenSimple( const QRectF & rect,
 
 void TreemapTile::createSquarifiedChildren( const QRectF & rect )
 {
-    if ( _orig->totalAllocatedSize() == 0 )
+    if ( _orig->totalSize() == 0 )
     {
-	logError()  << "Zero totalAllocatedSize()" << endl;
+	logError()  << "Zero totalSize()" << endl;
 	return;
     }
 
-    double scale	= rect.width() * (double) rect.height() / _orig->totalAllocatedSize();
+    double scale	= rect.width() * (double) rect.height() / _orig->totalSize();
     FileSize minSize	= (FileSize) ( _parentView->minTileSize() / scale );
 
     FileInfoSortedBySizeIterator it( _orig, minSize );
@@ -205,17 +205,17 @@ void TreemapTile::createSquarifiedChildren( const QRectF & rect )
     FileSize remainingTotal = 0;
 
     for ( FileInfoSortedBySizeIterator item = it; *item; ++item )
-	remainingTotal += (*item)->totalAllocatedSize();
+	remainingTotal += (*item)->totalSize();
 
     if ( minSize > 0 )
-	remainingTotal = _orig->totalAllocatedSize();
+	remainingTotal = _orig->totalSize();
 
     while ( *it )
     {
 	FileInfoList row = squarify( childrenRect, remainingTotal, it );
 	childrenRect = layoutRow( childrenRect, remainingTotal, row );
 	foreach ( FileInfo * item, row )
-	    remainingTotal -= item->totalAllocatedSize();
+	    remainingTotal -= item->totalSize();
     }
 }
 
@@ -245,11 +245,11 @@ FileInfoList TreemapTile::squarify( const QRectF & rect,
     double bestAspectRatio      = 0;
     double sum			= 0;
 
-    FileSize firstScale = (*it)->totalAllocatedSize() * rectLength;
+    FileSize firstScale = (*it)->totalSize() * rectLength;
 
     while ( *it && improvingAspectRatio )
     {
-	const FileSize size = (*it)->totalAllocatedSize();
+	const FileSize size = (*it)->totalSize();
 	sum += size;
 
 	if ( size != 0 && sum != 0 )
@@ -303,7 +303,7 @@ QRectF TreemapTile::layoutRow( const QRectF & rect,
     FileSize sum = 0;
 
     foreach ( FileInfo * item, row )
-	sum += item->totalAllocatedSize();
+	sum += item->totalSize();
 
     int secondary = (int) ( sum * qMax(rect.width(), rect.height()) / remainingTotal + 0.5 );
 
@@ -338,7 +338,7 @@ QRectF TreemapTile::layoutRow( const QRectF & rect,
 
     while ( it != end )
     {
-	double childSize =  (*it)->totalAllocatedSize() / (double) sum * primary;
+	double childSize =  (*it)->totalSize() / (double) sum * primary;
 
 	if ( childSize > remaining )	// Prevent overflow because of accumulated rounding errors
 	    childSize = remaining;

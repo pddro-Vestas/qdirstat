@@ -20,14 +20,15 @@ CleanupList StdCleanup::stdCleanups( QObject * parent )
     CleanupList cleanups;
 
     cleanups << openFileManagerHere( parent )
+         << openDolphinFileManagerHere( parent )
 	     << openTerminalHere   ( parent )
 	     << checkFileType      ( parent )
 	     << compressSubtree	   ( parent )
 	     << makeClean	   ( parent )
 	     << gitClean	   ( parent )
-	     << deleteJunk	   ( parent )
-	     << hardDelete	   ( parent )
-	     << clearDirContents   ( parent )
+	     //<< deleteJunk	   ( parent ) # disabled
+	     //<< hardDelete	   ( parent ) # disabled
+	     //<< clearDirContents   ( parent ) # disabled
 #if USE_DEBUG_ACTIONS
 	     << echoargs	   ( parent )
 	     << echoargsMixed	   ( parent )
@@ -41,6 +42,22 @@ CleanupList StdCleanup::stdCleanups( QObject * parent )
 }
 
 
+Cleanup * StdCleanup::openDolphinFileManagerHere( QObject * parent )
+{
+    Cleanup *cleanup = new Cleanup( "nohup dolphin >/dev/null 2>&1 & disown",
+				    QObject::tr( "Open Dolphin File &Manager Here" ),
+				    parent );
+    CHECK_NEW( cleanup );
+    cleanup->setWorksForDir	( true );
+    cleanup->setWorksForFile	( true );
+    cleanup->setWorksForDotEntry( true );
+    cleanup->setRefreshPolicy( Cleanup::NoRefresh );
+    cleanup->setIcon( ":/icons/file-manager.png" );
+    cleanup->setShortcut( Qt::CTRL + Qt::Key_G );
+    cleanup->setOutputWindowPolicy( Cleanup::ShowNever );
+
+    return cleanup;
+}
 
 Cleanup * StdCleanup::openFileManagerHere( QObject * parent )
 {
@@ -62,7 +79,7 @@ Cleanup * StdCleanup::openFileManagerHere( QObject * parent )
 
 Cleanup * StdCleanup::openTerminalHere( QObject * parent )
 {
-    Cleanup *cleanup = new Cleanup( "%terminal",
+    Cleanup *cleanup = new Cleanup( "exo-open --launch TerminalEmulator",
 				    QObject::tr( "Open &Terminal Here" ),
 				    parent );
     CHECK_NEW( cleanup );

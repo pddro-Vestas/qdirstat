@@ -20,7 +20,7 @@ CleanupList StdCleanup::stdCleanups( QObject * parent )
     CleanupList cleanups;
 
     cleanups << openFileManagerHere( parent )
-         << openDolphinFileManagerHere( parent )
+	     << openDolphinFileManagerHere( parent )
 	     << openTerminalHere   ( parent )
 	     << checkFileType      ( parent )
 	     << compressSubtree	   ( parent )

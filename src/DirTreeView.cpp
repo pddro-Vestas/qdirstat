@@ -38,6 +38,8 @@ DirTreeView::DirTreeView( QWidget * parent ):
     CHECK_NEW( _sizeColDelegate );
     setItemDelegateForColumn( SizeCol, _sizeColDelegate );
 
+    setItemDelegateForColumn( AllocatedSizeCol, _sizeColDelegate );
+
     setRootIsDecorated( true );
     setSortingEnabled( true );
     setSelectionMode( ExtendedSelection );

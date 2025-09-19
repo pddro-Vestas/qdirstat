@@ -492,6 +492,11 @@ namespace QDirStat
 	QVariant sizeColText( FileInfo * item ) const;
 
 	/**
+	 * Return the text for the allocated size for 'item'
+	 **/
+	QVariant allocatedSizeColText( FileInfo * item ) const;
+
+	/**
 	 * Format a percentage value as string if it is non-negative.
 	 * Return QVariant() if it is negative.
 	 **/

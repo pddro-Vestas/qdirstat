@@ -61,6 +61,7 @@ const DataColumnList DataColumns::defaultColumns() const
 	    << PercentBarCol
 	    << PercentNumCol
 	    << SizeCol
+        << AllocatedSizeCol
 	    << TotalItemsCol
 	    << TotalFilesCol
 	    << TotalSubDirsCol
@@ -136,6 +137,7 @@ QString DataColumns::toString( DataColumn col )
 	case PercentBarCol:		return "PercentBarCol";
 	case PercentNumCol:		return "PercentNumCol";
 	case SizeCol:		        return "SizeCol";
+    case AllocatedSizeCol:		return "AllocatedSizeCol";
 	case TotalItemsCol:		return "TotalItemsCol";
 	case TotalFilesCol:		return "TotalFilesCol";
 	case TotalSubDirsCol:		return "TotalSubDirsCol";

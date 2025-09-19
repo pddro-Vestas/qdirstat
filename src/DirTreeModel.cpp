@@ -487,6 +487,7 @@ QVariant DirTreeModel::headerData( int		   section,
 		case PercentBarCol:	  return tr( "Subtree Percentage" );
 		case PercentNumCol:	  return tr( "%"		  );
 		case SizeCol:		  return tr( "Size"		  );
+		case AllocatedSizeCol:  return tr( "Allocated Size"	  );
 		case TotalItemsCol:	  return tr( "Items"		  );
 		case TotalFilesCol:	  return tr( "Files"		  );
 		case TotalSubDirsCol:	  return tr( "Subdirs"		  );
@@ -505,6 +506,7 @@ QVariant DirTreeModel::headerData( int		   section,
 		case PercentBarCol:
 		case PercentNumCol:
 		case SizeCol:
+		case AllocatedSizeCol:
 		case TotalItemsCol:
 		case TotalFilesCol:
 		case TotalSubDirsCol:
@@ -694,8 +696,9 @@ QVariant DirTreeModel::columnText( FileInfo * item, int col ) const
     {
 	case NameCol:		  return item->name();
 	case PercentBarCol:	  return item->isExcluded() ? tr( "[Excluded]" ) : QVariant();
-	case PercentNumCol:	  return item == _tree->firstToplevel() ? QVariant() : formatPercent( item->subtreeAllocatedPercent() );
+	case PercentNumCol:	  return item == _tree->firstToplevel() ? QVariant() : formatPercent( item->subtreePercent() );
 	case SizeCol:		  return sizeColText( item );
+	case AllocatedSizeCol:    return allocatedSizeColText( item );
 	case LatestMTimeCol:	  return QString( "  " ) + formatTime( item->latestMtime() );
 	case UserCol:		  return limitedInfo ? QVariant() : item->userName();
 	case GroupCol:		  return limitedInfo ? QVariant() : item->groupName();
@@ -749,6 +752,7 @@ QVariant DirTreeModel::columnAlignment( FileInfo * item, int col ) const
 	case PercentBarCol:
 	case PercentNumCol:
 	case SizeCol:
+	case AllocatedSizeCol:
 	case TotalItemsCol:
 	case TotalFilesCol:
 	case TotalSubDirsCol:
@@ -826,6 +830,8 @@ QVariant DirTreeModel::columnRawData( FileInfo * item, int col ) const
     switch ( col )
     {
 	case NameCol:		  return item->name();
+	case AllocatedSizeCol:
+            return QVariant( static_cast<qlonglong>( item->allocatedSize() ) );
 	case PercentBarCol:
 	    {
 		if ( ( item->parent() && item->parent()->isBusy() ) ||
@@ -836,10 +842,10 @@ QVariant DirTreeModel::columnRawData( FileInfo * item, int col ) const
 		}
 		else
 		{
-		    return item->subtreeAllocatedPercent();
+		    return item->subtreePercent();
 		}
 	    }
-	case PercentNumCol:	  return item->subtreeAllocatedPercent();
+	case PercentNumCol:	  return item->subtreePercent();
 	case SizeCol:		  return item->totalSize();
 	case TotalItemsCol:	  return item->totalItems();
 	case TotalFilesCol:	  return item->totalFiles();
@@ -903,6 +909,19 @@ QString DirTreeModel::sizeText( FileInfo * item, QString (*fmtSz)(FileSize) )
     }
 
     return text;
+}
+
+QVariant DirTreeModel::allocatedSizeColText( FileInfo * item ) const
+{
+    if ( item->isDevice() )
+        return QVariant();
+
+    QString leftMargin( 2, ' ' );
+    
+    if ( item->isDirInfo() )
+        return leftMargin + item->sizePrefix() + formatSize( item->totalAllocatedSize() );
+    else
+        return leftMargin + formatSize( item->allocatedSize() );
 }
 
 
@@ -983,7 +1002,7 @@ QVariant DirTreeModel::sizeColText( FileInfo * item ) const
     QString leftMargin( 2, ' ' );
 
     if ( item->isDirInfo() )
-	return leftMargin + item->sizePrefix() + formatSize( item->totalAllocatedSize() );
+	return leftMargin + item->sizePrefix() + formatSize( item->totalSize() );
 
     QString text = sizeText( item );
 

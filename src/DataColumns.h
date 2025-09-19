@@ -28,6 +28,7 @@ namespace QDirStat
 	PercentBarCol,		// Graphical percentage bar
 	PercentNumCol,		// Numeric percentage Value
 	SizeCol,		// size (subtree or own size for files)
+	AllocatedSizeCol,	// allocated size (disk space actually used)
 	TotalItemsCol,		// Total number of items    in subtree
 	TotalFilesCol,		// Total number of files    in subtree
 	TotalSubDirsCol,	// Total number of subdirs  in subtree

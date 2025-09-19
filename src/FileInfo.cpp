@@ -247,14 +247,11 @@ bool FileInfo::checkMagicNumber() const
 
 FileSize FileInfo::size() const
 {
-    FileSize sz = _isSparseFile ? _allocatedSize : _size;
-
-    if ( _links > 1 && ! _ignoreHardLinks && isFile() )
-	sz /= _links;
-
-    return sz;
+    if ( isFile() && _links > 1 )
+        return _size / _links;  // For hard links, return logical size divided by link count
+    else
+        return _size;  // For all other cases, return logical size (_size, not _allocatedSize)
 }
-
 
 FileSize FileInfo::allocatedSize() const
 {

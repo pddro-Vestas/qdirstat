@@ -44,7 +44,7 @@ CleanupList StdCleanup::stdCleanups( QObject * parent )
 
 Cleanup * StdCleanup::openDolphinFileManagerHere( QObject * parent )
 {
-    Cleanup *cleanup = new Cleanup( "nohup dolphin >/dev/null 2>&1 & disown",
+    Cleanup *cleanup = new Cleanup( "dolphin %d >/dev/null 2>&1 &",
 				    QObject::tr( "Open Dolphin File &Manager Here" ),
 				    parent );
     CHECK_NEW( cleanup );

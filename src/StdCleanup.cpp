@@ -22,6 +22,7 @@ CleanupList StdCleanup::stdCleanups( QObject * parent )
     cleanups << openFileManagerHere( parent )
 	     << openDolphinFileManagerHere( parent )
 	     << openTerminalHere   ( parent )
+         << openCleanfolderGUIHere( parent )
 	     << checkFileType      ( parent )
 	     << compressSubtree	   ( parent )
 	     << makeClean	   ( parent )
@@ -90,6 +91,24 @@ Cleanup * StdCleanup::openTerminalHere( QObject * parent )
     cleanup->setIcon( ":/icons/terminal.png" );
     cleanup->setShortcut( Qt::CTRL + Qt::Key_T );
     cleanup->setOutputWindowPolicy( Cleanup::ShowNever ); // Make KDE konsole shut up
+
+    return cleanup;
+}
+
+Cleanup * StdCleanup::openCleanfolderGUIHere( QObject * parent )
+{
+    Cleanup *cleanup = new Cleanup( "/ifs/tools/app/cleanfolders/cleanfolders_gui.sh -d %d >/dev/null 2>&1 &",
+				    QObject::tr( "Open Cleanfolder GUI Here" ),
+				    parent );
+    CHECK_NEW( cleanup );
+    cleanup->setWorksForDir	( true );
+    cleanup->setWorksForFile	( true );
+    cleanup->setWorksForDotEntry( true );
+    cleanup->setRefreshPolicy( Cleanup::NoRefresh );
+    cleanup->setIcon( ":/icons/delete.png" );
+    // cleanup->setShortcut( Qt::CTRL + Qt::Key_G );
+    cleanup->setOutputWindowPolicy( Cleanup::ShowNever );
+    cleanup->setShell( "/bin/bash" );
 
     return cleanup;
 }

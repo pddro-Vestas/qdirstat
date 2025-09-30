@@ -22,7 +22,7 @@ CleanupList StdCleanup::stdCleanups( QObject * parent )
     cleanups << openFileManagerHere( parent )
 	     << openDolphinFileManagerHere( parent )
 	     << openTerminalHere   ( parent )
-         << openCleanfolderGUIHere( parent )
+         << openCleanFoldersGUIHere( parent )
 	     << checkFileType      ( parent )
 	     << compressSubtree	   ( parent )
 	     << makeClean	   ( parent )
@@ -95,10 +95,10 @@ Cleanup * StdCleanup::openTerminalHere( QObject * parent )
     return cleanup;
 }
 
-Cleanup * StdCleanup::openCleanfolderGUIHere( QObject * parent )
+Cleanup * StdCleanup::openCleanFoldersGUIHere( QObject * parent )
 {
     Cleanup *cleanup = new Cleanup( "/ifs/tools/app/cleanfolders/cleanfolders_gui.sh -d %d >/dev/null 2>&1 &",
-				    QObject::tr( "Open Cleanfolder GUI Here" ),
+				    QObject::tr( "Open CleanFolders GUI Here" ),
 				    parent );
     CHECK_NEW( cleanup );
     cleanup->setWorksForDir	( true );
